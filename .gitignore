@@ -1,0 +1,8 @@
+# generated outputs — never commit artwork, proofs or the delivery zip
+pack/
+sheets/
+assets/names/
+*.zip
+__pycache__/
+.cache/
+.venv/

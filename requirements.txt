@@ -1,0 +1,8 @@
+opencv-python-headless
+shapely
+cairosvg
+pypdf
+pillow
+numpy
+pikepdf
+qrcode[pil]
