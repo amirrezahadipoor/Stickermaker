@@ -450,6 +450,7 @@ def build(folder, title, words, rgb, logo, qr, expected=9):
 
 
 def main():
+    os.makedirs('pack', exist_ok=True)
     logo_path = next(p for p in ('assets/brand/logo.png',
                                  'uploads/logo-fixed-transparent.png') if os.path.exists(p))
     logo = Image.open(logo_path).convert('RGBA')
@@ -458,6 +459,9 @@ def main():
     missing = [th[0] for th in THEMES if th not in todo]
     if missing:
         print('SKIP (no generated name strip yet):', ', '.join(missing))
+    if not todo:
+        print('Nothing to build: put art in sheets/<folder>/raw.png and names in assets/names/<NN>.png')
+        return
     reps = [build(f, t, w, c, logo, qr) for f, t, w, c in todo]
     json.dump(reps, open('pack/summary.json', 'w'), ensure_ascii=False, indent=2)
     print('\n===== SUMMARY =====')
