@@ -11,18 +11,19 @@
 ۵ برگهٔ **A6 (۱۰۵ × ۱۴۸ میلی‌متر) با ۳۰۰ DPI**، پس‌زمینه سفید خالص، هر برگه **۹ استیکر**:
 ۶ استیکر شخصیت + ۳ استیکر اسم. هر برگه یک هدر برند دارد (لوگو + وردمارک + عنوان پک + QR).
 
-**ست جاری (ترند ۲۰۲۶ — اورجینال، بدون IP شخص ثالث):**
+**ست جاری — ترند ۲۰۲۶ #۲ (اورجینال، بدون IP شخص ثالث):**
 
-| پوشه | عنوان پک | اسم‌ها | رنگ |
-|---|---|---|---|
-| `01_ugly_cute` | UGLY CUTE | GOOFY / DERP / BLOBBY | (232,140,20) |
-| `02_designer_toys` | DESIGNER TOYS | MOMO / BOBO / LUNA | (214,120,160) |
-| `03_cyber_robots` | CYBER ROBOTS | BOLT / NEON / CHIP | (0,140,200) |
-| `04_greek_gods` | GREEK GODS | ZEUS / POSEIDON / HADES | (166,120,40) |
-| `05_kpop_hunters` | K-POP HUNTERS | RUMI / MIRA / ZOEY | (150,40,120) |
+| پوشه | عنوان پک | اسم‌ها | رنگ | ریشهٔ ترند |
+|---|---|---|---|---|
+| `01_raccoon_squad` | RACCOON SQUAD | JIMOTHY / BANDIT / ROCKY | (150,96,40) | راکون / meme حیوان خانگی ۲۰۲۶ |
+| `02_squishy_world` | SQUISHY WORLD | SQUISH / JELLY / NOODLE | (216,110,180) | اسباب‌بازی اسکویشی/سنسوری (NeeDoh) |
+| `03_gargoyles` | GARGOYLES | GRIM / STONE / VESPER | (90,100,120) | گارگویل‌های فانتزی |
+| `04_moon_witches` | MOON WITCHES | HAZEL / MORGANA / SABLE | (110,60,150) | ویچی/ویچ‌گات و فصل جادو |
+| `05_cozy_capybara` | COZY CAPYBARA | CAPI / MOSS / TOAD | (86,124,60) | کاپی‌بارا و کاتج‌کور پاییزی |
 
-> ست قبلی (برای مرجع پرامپت‌ها): `01_anime_legends` · `02_football_stars` · `03_dota2_heroes` · `04_cute_pets` · `05_anime_cool`.
-> تحویل نهایی ست ۲۰۲۶ چهار برگه بود (۰۱–۰۴)؛ شیت ۰۵ آرتش آماده است و فقط استریپ اسمش مانده.
+> ست قبلی (ترند ۲۰۲۶ #۱): `01_ugly_cute` · `02_designer_toys` · `03_cyber_robots` · `04_greek_gods` · `05_kpop_hunters`
+> و ست اولیه: `01_anime_legends` · `02_football_stars` · `03_dota2_heroes` · `04_cute_pets` · `05_anime_cool`.
+
 
 خروجی نهایی یک زیپ است: `sticker_pack_print_cut.zip` که داخلش پوشهٔ `pack/` با ۵ زیرپوشه + `README.txt` + `all_sheets_overview.png`.
 
@@ -111,6 +112,20 @@ mkdir -p sheets assets/names
 > A clean 3-column by 2-row grid of six different ancient Greek gods and mythic heroes, each one a COMPLETE FULL BODY figure from head to toe, nothing cropped, a comfortable white margin of empty space around each figure. Figures: a thunder god with a white beard, bronze armour and a crackling lightning bolt; a sea god with a coral crown, trident and flowing teal robes; a dark underworld king in black robes with a burning brazier and a three-headed hound at his feet; a goddess of wisdom in white marble armour with a spear and owl; a winged messenger god with a caduceus staff and winged sandals; a hero in a red cape with a round shield and sword. Epic cinematic mythological art, highly detailed bronze armour and drapery, dramatic varied poses, gold and marble accents. The figures must not touch each other or the image border. Pure flat white background, no panel borders, no frames, no text, no logos.
 
 > ⚠️ پوکمون (۳۰ سالگی) رد شد: پرامپت «electric mouse / fire lizard / seed dinosaur» با `moderation_blocked` برگشت. هر موضوعی که شبیه IP معروف باشد جایش را با موضوع اورجینال عوض کن.
+
+**پرامپت‌های ست ۲۰۲۶ #۲ (تأییدشده — همه یک‌جا پاس شدند):**
+
+قالب مشترک: «A clean 3-column by 2-row grid of six different <موضوع>, each one a COMPLETE FULL BODY … from … to …, nothing cropped, a comfortable white margin of empty space around each one. … The <موضوع> must not touch each other or the image border. Pure flat white background, no panel borders, no frames, no text, no logos.»
+
+| پک | <موضوع> | جزئیات کلیدی |
+|---|---|---|
+| raccoon_squad | mischievous cartoon raccoons | پیتزا، سطل زباله، خرس عروسکی، عینک گرد+زنجیر طلایی، جعبهٔ مقوایی، پشمک صورتی؛ «sticker-style cartoon, thick clean outlines» |
+| squishy_world | glossy squishy sensory toy characters | توپ خاردار صورتی، مکعب آبی شفاف با اکلیل، ستارهٔ رشته‌ای زرد، توپ نعنایی خواب‌آلود، رینگ یاسی اکلیلی، بلاب نارنجی؛ «translucent jelly, kawaii faces» |
+| gargoyles | whimsical gargoyle characters | نشسته روی پایه، خمیازه روی ستون، پر خوردن، کتاب خواندن، فانوس، هلال‌ماه؛ «weathered stone with moss» |
+| moon_witches | charming young witch characters | عصای ماه، گربهٔ سیاه، کتاب و شمع شناور، گوی کریستال، جارو، دیگ جادو؛ «whimsigoth, moon and star motifs» |
+| cozy_capybara | cozy capybara characters | کلاه قارچی+شال، وان چوبی با پرتقال، چای+قورباغه، بارانی+چتر، خواب در برگ‌ها، تاج گل+نارنگی؛ «cottagecore autumn palette» |
+
+> گارگویل‌ها، کاپی‌بارا و اسکویشی‌ها هیچ‌کدام moderation نخوردند؛ برای موضوع‌های شبیه IP (مثل پوکمون) احتمال رد بالاست — از قبل یک تم جایگزین اورجینال در ذهن داشته باش.
 
 ### گام ۲ — تولید ۵ استریپ استیکر اسم (مهم‌ترین درس این پروژه)
 اسم‌ها **هرگز با فونت تایپ نشوند** — با تولید عکس ساخته شوند. ذخیره در `assets/names/0{1..5}.png`.

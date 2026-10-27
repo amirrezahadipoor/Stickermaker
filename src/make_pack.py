@@ -43,11 +43,11 @@ SHOP = 'Ghelghelishop.com'
 QR_URL = 'https://ghelghelishop.com'
 
 THEMES = [
-    ('01_ugly_cute',      'UGLY CUTE',      ['GOOFY', 'DERP', 'BLOBBY'],   (232, 140, 20)),
-    ('02_designer_toys',  'DESIGNER TOYS',  ['MOMO', 'BOBO', 'LUNA'],      (214, 120, 160)),
-    ('03_cyber_robots',   'CYBER ROBOTS',   ['BOLT', 'NEON', 'CHIP'],      (0, 140, 200)),
-    ('04_greek_gods',     'GREEK GODS',     ['ZEUS', 'POSEIDON', 'HADES'], (166, 120, 40)),
-    ('05_kpop_hunters',   'K-POP HUNTERS',  ['RUMI', 'MIRA', 'ZOEY'],      (150, 40, 120)),
+    ('01_raccoon_squad', 'RACCOON SQUAD',  ['JIMOTHY', 'BANDIT', 'ROCKY'],  (150, 96, 40)),
+    ('02_squishy_world', 'SQUISHY WORLD',  ['SQUISH', 'JELLY', 'NOODLE'],   (216, 110, 180)),
+    ('03_gargoyles',     'GARGOYLES',      ['GRIM', 'STONE', 'VESPER'],     (90, 100, 120)),
+    ('04_moon_witches',  'MOON WITCHES',   ['HAZEL', 'MORGANA', 'SABLE'],   (110, 60, 150)),
+    ('05_cozy_capybara', 'COZY CAPYBARA',  ['CAPI', 'MOSS', 'TOAD'],        (86, 124, 60)),
 ]
 
 
