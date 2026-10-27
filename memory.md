@@ -11,19 +11,19 @@
 ۵ برگهٔ **A6 (۱۰۵ × ۱۴۸ میلی‌متر) با ۳۰۰ DPI**، پس‌زمینه سفید خالص، هر برگه **۹ استیکر**:
 ۶ استیکر شخصیت + ۳ استیکر اسم. هر برگه یک هدر برند دارد (لوگو + وردمارک + عنوان پک + QR).
 
-**ست جاری — ترند ۲۰۲۶ #۲ (اورجینال، بدون IP شخص ثالث):**
+**ست جاری — کمدی / پرفروش (اورجینال + کاربکچر):**
 
 | پوشه | عنوان پک | اسم‌ها | رنگ | ریشهٔ ترند |
 |---|---|---|---|---|
-| `01_raccoon_squad` | RACCOON SQUAD | JIMOTHY / BANDIT / ROCKY | (150,96,40) | راکون / meme حیوان خانگی ۲۰۲۶ |
-| `02_squishy_world` | SQUISHY WORLD | SQUISH / JELLY / NOODLE | (216,110,180) | اسباب‌بازی اسکویشی/سنسوری (NeeDoh) |
-| `03_gargoyles` | GARGOYLES | GRIM / STONE / VESPER | (90,100,120) | گارگویل‌های فانتزی |
-| `04_moon_witches` | MOON WITCHES | HAZEL / MORGANA / SABLE | (110,60,150) | ویچی/ویچ‌گات و فصل جادو |
-| `05_cozy_capybara` | COZY CAPYBARA | CAPI / MOSS / TOAD | (86,124,60) | کاپی‌بارا و کاتج‌کور پاییزی |
+| `01_funny_footballers` | FUNNY FOOTBALLERS | HAALAND / NEYMAR / SALAH | (24,132,60) | کاربکچر بازیکن فوتبال (کمدی پرفروش) |
+| `02_meme_cats` | MEME CATS | TOFU / BISCUIT / PICKLE | (226,122,40) | گربه‌های meme وایرال |
+| `03_funny_food` | FUNNY FOOD | TOASTY / BANANA / DUMPLING | (214,52,46) | غذای کاوایی / character food |
+| `04_silly_frogs` | SILLY FROGS | FROGGY / POND / RIBBIT | (86,158,40) | قورباغهٔ meme |
+| `05_office_animals` | OFFICE ANIMALS | BOSS / CHIEF / INTERN | (28,68,130) | طنز شرکتی / animals in suits |
 
-> ست قبلی (ترند ۲۰۲۶ #۱): `01_ugly_cute` · `02_designer_toys` · `03_cyber_robots` · `04_greek_gods` · `05_kpop_hunters`
-> و ست اولیه: `01_anime_legends` · `02_football_stars` · `03_dota2_heroes` · `04_cute_pets` · `05_anime_cool`.
-
+> ست‌های قبلی: ترند #۲ (`raccoon_squad`, `squishy_world`, `gargoyles`, `moon_witches`, `cozy_capybara`)،
+> ترند #۱ (`ugly_cute`, `designer_toys`, `cyber_robots`, `greek_gods`, `kpop_hunters`)،
+> ست اولیه (`anime_legends`, `football_stars`, `dota2_heroes`, `cute_pets`, `anime_cool`).
 
 خروجی نهایی یک زیپ است: `sticker_pack_print_cut.zip` که داخلش پوشهٔ `pack/` با ۵ زیرپوشه + `README.txt` + `all_sheets_overview.png`.
 
@@ -127,6 +127,18 @@ mkdir -p sheets assets/names
 
 > گارگویل‌ها، کاپی‌بارا و اسکویشی‌ها هیچ‌کدام moderation نخوردند؛ برای موضوع‌های شبیه IP (مثل پوکمون) احتمال رد بالاست — از قبل یک تم جایگزین اورجینال در ذهن داشته باش.
 
+**پرامپت‌های ست کمدی (همه یک‌جا پاس شدند):**
+
+| پک | <موضوع> در قالب مشترک | جزئیات کلیدی |
+|---|---|---|
+| funny_footballers | comedic caricature football players | سر بزرگ کاربکچر + بدن کوچک، چهرهٔ طنز با بافت پوست واقعی، ژست‌های خنده‌دار (دست باز، چشمک+لایک، سالتو، facepalm، توپ روی سر+زبان، شانه بالا)، شماره‌های ۱۰/۷/۷/۱۰/۱۱/۹، «no club crest, no brand logos» |
+| meme_cats | hilarious meme cats | جیغ دهان‌باز، نشستن مثل آدم غمگین، زبان‌بیرون+لوچ، خمیازه، صورت له‌شده پشت شیشه، کلاه کاغذی؛ «photographic-real fur» |
+| funny_food | funny kawaii food characters | نان تست با شنل و عینک، موز در позای یوگا، دامپلینگ با دمبل، سوشی سوار بر موج سس، توت‌فرنگی بداخلاق با چتر، پیتزا روی دست |
+| silly_frogs | hilarious cartoon frogs | بابا تی، جیغ دراماتیک، کابوی سوار حلزون، ورقلمبیده روی نیلوفر، بازو زدن، کلاه جشن و بوق |
+| office_animals | funny animals in business suits | سگ گلدن با قهوه و استرس، گربهٔ کت‌وشلوار، لاما با لپ‌تاپ، هامستر زیر کاغذ، اردک با پاپیون، پاگ خوابیده روی میز |
+
+> نکته: کاربکچر بازیکن فوتبال (برخلاف نسخهٔ واقع‌گرا) moderation نمی‌خورد؛ چون چهرهٔ کارتونی/اغراق‌شده است.
+
 ### گام ۲ — تولید ۵ استریپ استیکر اسم (مهم‌ترین درس این پروژه)
 اسم‌ها **هرگز با فونت تایپ نشوند** — با تولید عکس ساخته شوند. ذخیره در `assets/names/0{1..5}.png`.
 هر تصویر: **سه استیکر در یک ردیف افقی**، پس‌زمینه سفید، بدون قاب.
@@ -213,6 +225,7 @@ QR: qrcode, ERROR_CORRECT_H, border=1, data='https://ghelghelishop.com', 116 px 
 | خط برش مستطیل مستطیل شد | مولد دور هر کاراکتر یک **قاب نازک بسته** می‌کشد و `fill_holes` آن را پر می‌کند | `OPEN` با کرنل ۷ قبل از `fill_holes` + در پرامپت «no frames, no outlines» |
 | مستطیل بلند تا پای صفحه | `fill_holes` بدون حاشیه: شکلی که به لبه می‌چسبد بوم را دو نیم می‌کند و نوار خالی «حفره» حساب می‌شد | `fill_holes` بعد از `copyMakeBorder(2px)` و کراپ برگشتی |
 | ستون وسط گم شد / دو استیکر ناپدید | انتخاب مرز سلول با پنجرهٔ نسبی، مرز را داخل راهروی اشتباه می‌گذاشت | مرز فقط روی میانهٔ «ران سفید» واقعی |
+| یک کاراکتر کل شیت را قورت داد (مثلاً بازیکن وارونه) | برش روی «ران سفید سراسری» انجام می‌شد و وقتی یک ژست وارونه/هالهٔ آرت همهٔ ردیف را پر می‌کرد، مرز پیدا نمی‌شد | `split_cols_then_rows()`: اول ستون‌ها (که همیشه جدا می‌شوند) بعد برش ردیف داخل هر ستون؛ و اگر ورودی گرید نامنظم بود `split_by_components()` با ادغام قطعه‌های کوچک |
 | خار/موی نازک بیرون از فرم | باقی‌ماندهٔ خط نازک آرت | `OPEN` تطبیقی در `smooth_path` |
 | حذف سایهٔ استودیویی، جوراب و کفش سفید را خورد | قاعدهٔ «خاکستری روشن = سایه» روی سفیدی لباس هم اعمال می‌شد | سایه را نگه دار؛ داخل خط برش بماند، فقط پرامپت «no shadow» بده |
 | بازیکن واقعی/عکس‌واقعی | `moderation_blocked` (۴ بار تجربه شد) | «photorealistic faces … ultra-realistic 3D characters» بدون نام |

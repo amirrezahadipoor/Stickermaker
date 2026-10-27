@@ -43,11 +43,11 @@ SHOP = 'Ghelghelishop.com'
 QR_URL = 'https://ghelghelishop.com'
 
 THEMES = [
-    ('01_raccoon_squad', 'RACCOON SQUAD',  ['JIMOTHY', 'BANDIT', 'ROCKY'],  (150, 96, 40)),
-    ('02_squishy_world', 'SQUISHY WORLD',  ['SQUISH', 'JELLY', 'NOODLE'],   (216, 110, 180)),
-    ('03_gargoyles',     'GARGOYLES',      ['GRIM', 'STONE', 'VESPER'],     (90, 100, 120)),
-    ('04_moon_witches',  'MOON WITCHES',   ['HAZEL', 'MORGANA', 'SABLE'],   (110, 60, 150)),
-    ('05_cozy_capybara', 'COZY CAPYBARA',  ['CAPI', 'MOSS', 'TOAD'],        (86, 124, 60)),
+    ('01_funny_footballers', 'FUNNY FOOTBALLERS', ['HAALAND', 'NEYMAR', 'SALAH'],   (24, 132, 60)),
+    ('02_meme_cats',         'MEME CATS',         ['TOFU', 'BISCUIT', 'PICKLE'],    (226, 122, 40)),
+    ('03_funny_food',        'FUNNY FOOD',        ['TOASTY', 'BANANA', 'DUMPLING'], (214, 52, 46)),
+    ('04_silly_frogs',       'SILLY FROGS',       ['FROGGY', 'POND', 'RIBBIT'],     (86, 158, 40)),
+    ('05_office_animals',    'OFFICE ANIMALS',    ['BOSS', 'CHIEF', 'INTERN'],      (28, 68, 130)),
 ]
 
 
@@ -208,6 +208,97 @@ def split_cells(img, rows=2, cols=3, strip_top=0):
     return cells
 
 
+def split_cols_then_rows(img, rows=2, cols=3):
+    """Columns first (generated grids always separate horizontally), then a local
+    row cut inside each column.  Handles poses that break a global row gutter."""
+    a = np.array(img.convert('RGB'))
+    h, w = a.shape[:2]
+    ink = (a.min(axis=2) < WHITE_T).astype(np.uint8)
+    colp = np.convolve(ink.sum(axis=0), np.ones(9) / 9, mode='same')
+
+    cuts = []
+    for i in range(1, cols):
+        ideal = int(w * i / cols)
+        lo, hi = int(w * (i / cols - 0.14)), int(w * (i / cols + 0.14))
+        cuts.append(lo + int(np.argmin(colp[lo:hi])) if hi > lo else ideal)
+    xs = [0] + sorted(cuts) + [w]
+    if any(b - a2 < w / (cols * 2.2) for a2, b in zip(xs, xs[1:])):
+        return None
+
+    cells = []
+    for c in range(cols):
+        band = ink[:, xs[c]:xs[c + 1]]
+        rowp = np.convolve(band.sum(axis=1), np.ones(9) / 9, mode='same')
+        if rows == 1:
+            ys = [0, h]
+            cuts_y = []
+        else:
+            cuts_y = []
+            for i in range(1, rows):
+                lo, hi = int(h * (i / rows - 0.22)), int(h * (i / rows + 0.22))
+                cuts_y.append(lo + int(np.argmin(rowp[lo:hi])) if hi > lo else int(h * i / rows))
+        ys = [0] + sorted(cuts_y) + [h]
+        pad = 12
+        for r in range(rows):
+            y0, y1 = max(0, ys[r] - pad), min(h, ys[r + 1] + pad)
+            x0, x1 = max(0, xs[c] - pad), min(w, xs[c + 1] + pad)
+            cells.append(img.crop((x0, y0, x1, y1)))
+    return cells
+
+
+def split_by_components(img, rows=2, cols=3, min_frac=0.004):
+    """Split a grid sheet by finding the characters themselves.
+
+    Safer than cutting on white gutters: an irregular pose (an upside-down
+    player, a splash, a ball held on the head) can leave no fully white row,
+    which used to collapse the whole sheet into one cell.  Several linking
+    radii are tried; small fragments are merged into the nearest character.
+    """
+    need = rows * cols
+    a = np.array(img.convert('RGB'))
+    h, w = a.shape[:2]
+    mask = (a.min(axis=2) < WHITE_T).astype(np.uint8)
+    mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+    total = float(mask.sum()) or 1.0
+
+    for link in (30, 26, 22, 18, 15, 12, 10, 8):
+        k = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (link, link))
+        n, lab, st, cent = cv2.connectedComponentsWithStats(
+            cv2.dilate(mask, k), 8)
+        groups = [{'ids': {i}, 'area': st[i, cv2.CC_STAT_AREA],
+                   'c': np.array(cent[i])} for i in range(1, n)]
+        groups = [g for g in groups if g['area'] >= st[1:, cv2.CC_STAT_AREA].max() * min_frac]
+        if len(groups) < need:
+            continue
+        # merge the smallest fragments into whichever group is closest
+        while len(groups) > need:
+            groups.sort(key=lambda g: g['area'])
+            small = groups.pop(0)
+            host = min(groups, key=lambda g: np.linalg.norm(g['c'] - small['c']))
+            host['ids'] |= small['ids']
+            host['area'] += small['area']
+        groups.sort(key=lambda g: g['c'][1])
+        grid = [sorted(groups[i * cols:(i + 1) * cols], key=lambda g: g['c'][0])
+                for i in range(rows)]
+        cells = []
+        ok = True
+        for r in range(rows):
+            for c in range(cols):
+                sub = (mask > 0) & np.isin(lab, list(grid[r][c]['ids']))
+                if sub.sum() > 0.7 * total:            # merge went wrong
+                    ok = False
+                    break
+                ys, xs = np.where(sub)
+                pad = 14
+                cells.append(img.crop((max(0, xs.min() - pad), max(0, ys.min() - pad),
+                                       min(w, xs.max() + pad + 1), min(h, ys.max() + pad + 1))))
+            if not ok:
+                break
+        if ok and len(cells) == need:
+            return cells
+    return None
+
+
 def sticker_rgba(cell):
     """white -> transparent, keep only the biggest silhouette (kills neighbour slivers)."""
     im = trim(cell, pad=3)
@@ -314,7 +405,9 @@ def resample_ring(arr, spacing=RESAMPLE):
 def build(folder, title, words, rgb, logo, qr, expected=9):
     src = f'sheets/{folder}/raw.png'
     sheet = trim(Image.open(src).convert('RGB'), pad=6)
-    cells = split_cells(sheet, 2, 3, strip_top=0)
+    cells = (split_cols_then_rows(sheet, 2, 3)
+             or split_by_components(sheet, 2, 3)
+             or split_cells(sheet, 2, 3, strip_top=0))
     stickers = [sticker_rgba(c) for c in cells]
 
     page = Image.new('RGB', A6, (255, 255, 255))
