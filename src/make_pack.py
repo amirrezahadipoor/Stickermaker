@@ -25,14 +25,14 @@ from shapely.geometry import Polygon, MultiPolygon
 A6 = (1240, 1748)
 DPI = 300
 MM = (105.0, 148.0)
-HEADER_H = 210
-FOOT_H = 236
-MARGIN_X = 40
-TOP_GAP = 8
+HEADER_H = 196
+FOOT_H = 196
+MARGIN_X = 34
+TOP_GAP = 4
 STROKE_PT = 0.25
-MIN_GAP_PX = 5.0
+MIN_GAP_PX = 14.0
 WHITE_T = 249            # below this = ink
-EDGE_MARGIN_PX = 5.0
+EDGE_MARGIN_PX = 30.0
 BLUR_SIGMA = 2.6
 RESAMPLE = 5.0
 TENSION = 0.85
@@ -43,18 +43,24 @@ SHOP = 'Ghelghelishop.com'
 QR_URL = 'https://ghelghelishop.com'
 
 THEMES = [
-    ('01_funny_footballers', 'FUNNY FOOTBALLERS', ['HAALAND', 'NEYMAR', 'SALAH'],   (24, 132, 60)),
-    ('02_meme_cats',         'MEME CATS',         ['TOFU', 'BISCUIT', 'PICKLE'],    (226, 122, 40)),
-    ('03_funny_food',        'FUNNY FOOD',        ['TOASTY', 'BANANA', 'DUMPLING'], (214, 52, 46)),
-    ('04_silly_frogs',       'SILLY FROGS',       ['FROGGY', 'POND', 'RIBBIT'],     (86, 158, 40)),
-    ('05_office_animals',    'OFFICE ANIMALS',    ['BOSS', 'CHIEF', 'INTERN'],      (28, 68, 130)),
+    ('01_kawaii_girls',  'KAWAII GIRLS',  ['MIA', 'LULU', 'ZARA'],        (196, 60, 120)),
+    ('02_derpy_dogs',    'DERPY DOGS',    ['BUBBA', 'BEAN', 'WAFFLE'],    (200, 120, 40)),
+    ('03_kawaii_drinks', 'KAWAII DRINKS', ['LATTE', 'BOBA', 'MATCHA'],    (150, 110, 60)),
+    ('04_y2k_retro',     'Y2K RETRO',     ['GLOSSY', 'CHROME', 'BUBBLE'], (90, 80, 200)),
 ]
 
 
 def name_stickers(strip_path):
-    """the three name stickers come from a generated artwork strip, not from type"""
+    """the three name stickers come from a generated artwork strip, not from type.
+
+    Split on the real white gutters (not fixed thirds): a wide word such as GLOSSY
+    used to be sliced in half by an equal-thirds cut.
+    """
     im = trim(Image.open(strip_path).convert('RGB'), pad=4)
-    return [sticker_rgba(c) for c in split_cells(im, 1, 3, strip_top=0)]
+    cells = (split_cols_then_rows(im, 1, 3)
+             or split_by_components(im, 1, 3)
+             or split_cells(im, 1, 3, strip_top=0))
+    return [sticker_rgba(c) for c in cells]
 
 
 # ---------------------------------------------------------------- text / brand
@@ -416,40 +422,59 @@ def build(folder, title, words, rgb, logo, qr, expected=9):
 
     body_top = HEADER_H + TOP_GAP
     body_bottom = A6[1] - FOOT_H
-    cell_w = (A6[0] - 2 * MARGIN_X) // 3
-    cell_h = (body_bottom - body_top) // 2
+    body_h = body_bottom - body_top
+    avail_w = A6[0] - 2 * MARGIN_X
+    GAP = 22                                    # gutter between two stickers
 
-    # scale every sticker to its cell, then centre the two rows as one block so the
-    # page never gets a dead white band between rows
-    box_w, box_h = cell_w - 14, cell_h - 12
+    # pack the six stickers as tight as the paper allows: each row is scaled until
+    # every sticker in a row is scaled to the SAME height, so the row reads as one
+    # band: find the tallest common height whose three widths still fit the paper
+    def row_height(group, cap):
+        lo, hi = 1.0, cap
+        for _ in range(40):
+            mid = (lo + hi) / 2
+            need = sum(mid * st.width / st.height for st in group) + 2 * GAP
+            if need <= avail_w and mid <= cap:
+                lo = mid
+            else:
+                hi = mid
+        return lo
+
+    cap = (body_h - 2 * GAP) / 2.0
     sized = []
-    for st in stickers:
-        sc = min(box_w / st.width, box_h / st.height)
-        nw, nh = int(st.width * sc), int(st.height * sc)
-        sized.append(st.resize((nw, nh), Image.LANCZOS))
+    for r in (0, 1):
+        h = row_height(stickers[r * 3:r * 3 + 3], cap)
+        for st in stickers[r * 3:r * 3 + 3]:
+            w = int(round(h * st.width / st.height))
+            sized.append(st.resize((max(1, w), max(1, int(h))), Image.LANCZOS))
+
     row_h = [max(s.height for s in sized[r * 3:r * 3 + 3]) for r in (0, 1)]
-    block_h = sum(row_h) + 34
-    top = body_top + max(0, (cell_h * 2 - block_h) // 2)
-    row_y = [top, top + row_h[0] + 34]
+    slack = body_h - (sum(row_h) + 2 * GAP)
+    pad = max(0.0, slack) / 3.0
+    row_y = [body_top + pad, body_top + pad + row_h[0] + GAP + pad]
 
     paths = []
     for i, st_r in enumerate(sized):
         r, c = divmod(i, 3)
-        x = MARGIN_X + c * cell_w + (cell_w - st_r.width) // 2
-        y = row_y[r] + (row_h[r] - st_r.height) // 2
+        row_w = sum(s.width for s in sized[r * 3:r * 3 + 3]) + 2 * GAP
+        x = MARGIN_X + max(0, (avail_w - row_w) // 2)
+        for cc in range(c):
+            x += sized[r * 3 + cc].width + GAP
+        y = int(row_y[r] + (row_h[r] - st_r.height) / 2)
         page.paste(st_r, (x, y), st_r)
         alpha = np.array(st_r.split()[-1])
         paths.append(('sticker', smooth_path(alpha, x, y), dict(row=r, col=c)))
 
-    chip_box_w = (A6[0] - 2 * MARGIN_X) // 3 - 16
-    chip_box_h = FOOT_H - 110
+    chip_box_w = (A6[0] - 2 * MARGIN_X) // 3 - 26
+    chip_box_h = A6[1] - 40 - (body_bottom + 30)
+    chip_box_w = int(chip_box_w * 0.92)
     for i, (w, art) in enumerate(zip(words, name_stickers(f'assets/names/{folder[:2]}.png'))):
         sc = min(chip_box_w / art.width, chip_box_h / art.height)
         nw, nh = int(art.width * sc), int(art.height * sc)
         chip = art.resize((nw, nh), Image.LANCZOS)
         cx = MARGIN_X + i * (chip_box_w + 16)
         x = cx + (chip_box_w - nw) // 2
-        y = body_bottom + 52 + (chip_box_h - nh) // 2
+        y = body_bottom + 30 + (chip_box_h - nh) // 2
         page.paste(chip, (x, y), chip)
         alpha = np.array(chip.split()[-1])
         paths.append(('chip', smooth_path(alpha, x, y, grow=2), dict(word=w)))
@@ -524,6 +549,8 @@ def build(folder, title, words, rgb, logo, qr, expected=9):
     gaps = [(pl[i].distance(pl[j]), i + 1, j + 1) for i in range(len(pl)) for j in range(i + 1, len(pl))]
     mingu = min(g[0] for g in gaps) if gaps else None
     edges = [min(p.bounds[0], p.bounds[1], W - p.bounds[2], H - p.bounds[3]) for p in pl]
+    if min(edges) < EDGE_MARGIN_PX:
+        print('   tight paths:', [(i + 1, round(e, 1)) for i, e in enumerate(edges) if e < EDGE_MARGIN_PX])
     mm_px = MM[0] / W
     rep = dict(sheet=folder, title=title, words=words, canvas_px=list(A6), canvas_mm=list(MM), dpi=DPI,
                path_count=len(paths), expected=expected, count_ok=len(paths) == expected,
